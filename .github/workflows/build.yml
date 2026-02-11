@@ -12,19 +12,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1️⃣ JDK 17：安装 SDK 21 + Build Tools 21.1.2
+      # 1️⃣ JDK 17：用来运行 sdkmanager
       - name: Set up JDK 17 for sdkmanager
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      # 2️⃣ 安装 32 位库（aapt 需要）
+      - name: Install 32-bit libraries
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y libc6:i386 libncurses5:i386 libstdc++6:i386 libz1:i386
+
+      # 3️⃣ 安装 Android SDK 21 + Build Tools 21.1.2
       - name: Install Android SDK 21 and Build Tools
         run: |
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platforms;android-21"
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "build-tools;21.1.2"
 
-      # 2️⃣ 切回 JDK 8 编译
+      # 4️⃣ 将 jcenter() 替换为 mavenCentral()（jcenter 已关）
+      - name: Replace jcenter with mavenCentral
+        run: |
+          find . -name "*.gradle" -type f -exec sed -i 's/jcenter()/mavenCentral()/g' {} +
+
+      # 5️⃣ 切回 JDK 8 编译项目
       - name: Set up JDK 8 for Gradle
         uses: actions/setup-java@v4
         with:
