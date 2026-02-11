@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04      # 👈 唯一关键修改，从 latest 降级到 20.04
 
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 2️⃣ 安装 32 位库（aapt 需要）
+      # 2️⃣ 安装 32 位库（20.04 源里都有）
       - name: Install 32-bit libraries
         run: |
           sudo dpkg --add-architecture i386
