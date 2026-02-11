@@ -12,18 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1️⃣ 先用 JDK 17 来运行 sdkmanager
+      # 1️⃣ JDK 17：安装 SDK 21 + Build Tools 21.1.2
       - name: Set up JDK 17 for sdkmanager
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Android SDK 21
+      - name: Install Android SDK 21 and Build Tools
         run: |
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platforms;android-21"
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "build-tools;21.1.2"
 
-      # 2️⃣ 立刻切回 JDK 8 用于 Gradle 编译
+      # 2️⃣ 切回 JDK 8 编译
       - name: Set up JDK 8 for Gradle
         uses: actions/setup-java@v4
         with:
