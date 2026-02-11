@@ -3,7 +3,7 @@ name: Build APK
 on:
   push:
     branches: [ "main", "master" ]
-  workflow_dispatch:   # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,16 +12,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 8
+      # 1️⃣ 先用 JDK 17 来运行 sdkmanager
+      - name: Set up JDK 17 for sdkmanager
         uses: actions/setup-java@v4
         with:
-          java-version: '8'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Install Android SDK 21
         run: |
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platforms;android-21"
-      
+
+      # 2️⃣ 立刻切回 JDK 8 用于 Gradle 编译
+      - name: Set up JDK 8 for Gradle
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
