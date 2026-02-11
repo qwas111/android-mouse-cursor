@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Android SDK 21
         run: |
-          echo "y" | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "platforms;android-21"
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platforms;android-21"
       
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
